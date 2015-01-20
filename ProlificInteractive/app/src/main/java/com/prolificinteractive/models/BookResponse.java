@@ -7,7 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class BookResponse
+public class BookResponse extends BaseResponse
 {
     protected String author;
     protected String categories;

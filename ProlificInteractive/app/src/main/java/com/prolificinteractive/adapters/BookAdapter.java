@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.prolificinteractive.R;
 import com.prolificinteractive.models.BookResponse;
 import com.prolificinteractive.viewholders.BookHolder;
@@ -58,9 +60,23 @@ public class BookAdapter extends ArrayAdapter<BookResponse>
         return view;
     }
 
+    private void setCircleColor(int position, BookHolder holder){
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        String author = this.getItem(position).getAuthor().toString();
+        int color = generator.getColor(author);
+
+
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(author.substring(0,1).toString(), color);
+        holder.getImageView().setImageDrawable(drawable);
+
+    }
     public void setViews(int position, BookHolder holder){
             holder.getBookTitle().setText(this.getItem(position).getTitle());
             holder.getAuthorName().setText(this.getItem(position).getAuthor());
+
+
+            setCircleColor(position, holder);
     }
 
 

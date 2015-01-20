@@ -2,17 +2,17 @@ package com.prolificinteractive.services;
 
 import com.prolificinteractive.models.BookResponse;
 
-import java.util.List;
-
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 /**
- * Created by Fanilo on 19/01/2015.
+ * Created by Fanilo on 20/01/2015.
  */
 public interface IBookService
 {
-    @GET("/books")
-    public void getBooksLibrary(
-            Callback<List<BookResponse>> callback);
+    @GET("/{url}")
+    public void getSpecificBook(
+            @Path("url") String url,
+            Callback<BookResponse> callback);
 }

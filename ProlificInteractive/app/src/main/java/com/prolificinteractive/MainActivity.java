@@ -5,7 +5,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.prolificinteractive.fragments.BookFragment;
+import com.prolificinteractive.fragments.LibraryFragment;
+import com.prolificinteractive.utils.Globals;
 
 
 public class MainActivity extends ActionBarActivity
@@ -17,9 +18,11 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Globals g = Globals.getInstance();
+        g.setUrl("http://prolific-interview.herokuapp.com/54bd7b72778b4a0008876e08");
         getFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, BookFragment.newInstance()).addToBackStack(null).commit();
+                .add(R.id.container, LibraryFragment.newInstance()).addToBackStack(null).commit();
     }
 
 

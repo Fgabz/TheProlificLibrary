@@ -13,6 +13,7 @@ import com.gc.materialdesign.views.ButtonRectangle;
 import com.prolificinteractive.R;
 import com.prolificinteractive.models.AddBookResponse;
 import com.prolificinteractive.services.IAddBookService;
+import com.prolificinteractive.utils.Globals;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,8 +43,9 @@ public class AddBookFragment extends Fragment
 
     public AddBookFragment()
     {
+        Globals g = Globals.getInstance();
         mBookService = new RestAdapter.Builder()
-                .setEndpoint("http://prolific-interview.herokuapp.com/54bd7b72778b4a0008876e08")
+                .setEndpoint(g.getUrl())
                 .build()
                 .create(IAddBookService.class);
     }
@@ -70,6 +72,13 @@ public class AddBookFragment extends Fragment
                         {
                                 Toast.makeText(getActivity(), "Book Added !",
                                         Toast.LENGTH_SHORT).show();
+
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up,
+                                            R.anim.slide_in_up, R.anim.slide_out_up)
+                                    .replace(R.id.container, LibraryFragment.newInstance())
+                                    .commit();
                         }
 
                         @Override public void failure(RetrofitError error)
