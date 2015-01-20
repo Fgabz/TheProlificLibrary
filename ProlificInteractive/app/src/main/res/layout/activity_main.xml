@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.prolificinteractive.utils.MyCustomLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/container"
                 android:layout_width="match_parent"
@@ -11,4 +11,4 @@
 
 
 
-</FrameLayout>
+</com.prolificinteractive.utils.MyCustomLayout>

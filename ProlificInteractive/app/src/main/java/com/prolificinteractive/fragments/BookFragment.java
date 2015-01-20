@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -69,26 +70,32 @@ public class BookFragment extends Fragment
                 .create(IDeleteBookService.class);
     }
 
-    private int dp2px(int dp) {
+    private int dp2px(int dp)
+    {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
     }
 
     @OnClick(R.id.buttonFloat)
-    public void addBook(){
+    public void addBook()
+    {
         getFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_in_up,
-                        R.anim.slide_out_up)
+
+                .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up,
+                        R.anim.slide_in_up, R.anim.slide_out_up)
                 .replace(R.id.container, AddBookFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
     }
 
-    private void createSwipeList(){
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
+    private void createSwipeList()
+    {
+        SwipeMenuCreator creator = new SwipeMenuCreator()
+        {
             @Override
-            public void create(SwipeMenu menu) {
+            public void create(SwipeMenu menu)
+            {
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(
                         getActivity().getApplicationContext());
@@ -96,7 +103,7 @@ public class BookFragment extends Fragment
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
                 // set item width
-                deleteItem.setWidth(dp2px(90));
+                deleteItem.setWidth(dp2px(180));
                 // set a icon
 
 
@@ -110,7 +117,8 @@ public class BookFragment extends Fragment
         mListView.setMenuCreator(creator);
     }
 
-    private void showListContent(){
+    private void showListContent()
+    {
         bookService.getBooksLibrary(new Callback<List<BookResponse>>()
         {
             @Override public void success(List<BookResponse> bookResponses, Response response)
@@ -123,18 +131,36 @@ public class BookFragment extends Fragment
 
             @Override public void failure(RetrofitError error)
             {
-
+                Toast.makeText(getActivity(), "Error while downloading", Toast.LENGTH_SHORT).show();
             }
         });
+
+        if (mSwipeRefreshLayout != null)
+        {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    // stop progress animation
+                    mSwipeRefreshLayout.animate().cancel();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }, 1000);
+
+        }
+
     }
 
 
-    public void deleteMethod(int position, int index) {
-        if (index == 0){
+    public void deleteMethod(int position, int index)
+    {
+        if (index == 0)
+        {
             BookResponse book = (BookResponse) mListView.getItemAtPosition(position);
             mAdapter.remove(book);
             mAdapter.notifyDataSetChanged();
-            deleteBookService.deleteBook(book.getUrl().substring(1), new Callback<BaseResponse>() {
+            deleteBookService.deleteBook(book.getUrl().substring(1), new Callback<BaseResponse>()
+            {
                 @Override public void success(BaseResponse baseResponse, Response response)
                 {
                     Toast.makeText(getActivity(), "Book Deleted", Toast.LENGTH_SHORT).show();
@@ -169,22 +195,24 @@ public class BookFragment extends Fragment
         mListView.setAdapter(mAdapter);
         this.createSwipeList();
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
             @Override public void onRefresh()
             {
                 showListContent();
             }
+
         });
-        mSwipeRefreshLayout.animate().cancel();
-        mSwipeRefreshLayout.setRefreshing(false);
 
 
-        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener()
+        {
             @Override public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
             {
-                switch (index) {
+                switch (index)
+                {
                     case 0:
-                        deleteMethod(position,index);
+                        deleteMethod(position, index);
                 }
 
                 return false;
