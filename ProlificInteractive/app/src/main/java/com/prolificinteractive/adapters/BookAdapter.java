@@ -71,6 +71,7 @@ public class BookAdapter extends ArrayAdapter<BookResponse>
         holder.getImageView().setImageDrawable(drawable);
 
     }
+
     public void setViews(int position, BookHolder holder){
             holder.getBookTitle().setText(this.getItem(position).getTitle());
             holder.getAuthorName().setText(this.getItem(position).getAuthor());

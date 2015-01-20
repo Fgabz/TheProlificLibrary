@@ -50,7 +50,7 @@ public class LibraryFragment extends Fragment
     private final IDeleteBookService deleteBookService;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    // TODO: Rename and change types and number of parameters
+
     public static LibraryFragment newInstance()
     {
         LibraryFragment fragment = new LibraryFragment();
@@ -226,7 +226,7 @@ public class LibraryFragment extends Fragment
     }
 
 
-    @OnItemClick(android.R.id.list)
+    @OnItemClick(R.id.listView)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         BookResponse book = (BookResponse) mListView.getItemAtPosition(position);

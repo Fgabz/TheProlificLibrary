@@ -19,6 +19,16 @@ public class MyCustomLayout extends RelativeLayout
         super(context, attrs);
     }
 
+    public float getXFraction() {
+        return getX() / getWidth(); // TODO: guard divide-by-zero
+    }
+
+    public void setXFraction(float XFraction) {
+        // TODO: cache width
+        final int width = getWidth();
+        setY((width > 0) ? (XFraction * width) : -9999);
+    }
+
     public float getYFraction() {
         return getY() / getHeight(); // TODO: guard divide-by-zero
     }
