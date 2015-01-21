@@ -54,8 +54,6 @@ public class AddBookFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @OnClick(R.id.submit_button)
@@ -73,12 +71,7 @@ public class AddBookFragment extends Fragment
                                 Toast.makeText(getActivity(), "Book Added !",
                                         Toast.LENGTH_SHORT).show();
 
-                            getFragmentManager()
-                                    .beginTransaction()
-                                    .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up,
-                                            R.anim.slide_in_up, R.anim.slide_out_up)
-                                    .replace(R.id.container, LibraryFragment.newInstance())
-                                    .commit();
+                            getFragmentManager().popBackStackImmediate();
                         }
 
                         @Override public void failure(RetrofitError error)

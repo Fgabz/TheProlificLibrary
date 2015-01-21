@@ -1,20 +1,24 @@
 package com.prolificinteractive.fragments;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.gc.materialdesign.views.ButtonRectangle;
-import com.gc.materialdesign.widgets.Dialog;
 import com.prolificinteractive.R;
+import com.prolificinteractive.models.BaseResponse;
 import com.prolificinteractive.models.BookResponse;
 import com.prolificinteractive.services.IBookService;
+import com.prolificinteractive.services.IUpdateService;
 import com.prolificinteractive.utils.Globals;
 
 import butterknife.ButterKnife;
@@ -32,6 +36,7 @@ public class BookFragment extends Fragment
     private static final String ARG_AUTHOR = "author";
 
     private final IBookService bookService;
+    private final IUpdateService updateService;
     private String mBookUrl;
     private String mAuthor;
 
@@ -61,6 +66,11 @@ public class BookFragment extends Fragment
                 .setEndpoint(g.getUrl())
                 .build()
                 .create(IBookService.class);
+
+        this.updateService = new RestAdapter.Builder()
+                .setEndpoint(g.getUrl())
+                .build()
+                .create(IUpdateService.class);
     }
 
     @Override
@@ -117,36 +127,63 @@ public class BookFragment extends Fragment
     @OnClick(R.id.checkout_button)
     public void checkoutAction()
     {
-        Dialog dialog = new Dialog(getActivity(),
-                "Checkout Book", "Under which name you want to checkout ?");
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_fragment);
+        dialog.setTitle("Checkout");
 
-//        final EditText input = new EditText(getActivity());
-//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT);
-//        input.setLayoutParams(lp);
-//
-//        dialog.setContentView(input);
+        TextView txt = (TextView) dialog.findViewById(R.id.dialogTitle);
+        txt.setText("Under which username you want to checkout ?");
 
-        // Set accept click listenner
-        dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v)
+        final EditText edit = (EditText) dialog.findViewById(R.id.editdialog_name);
+
+        ButtonRectangle cancelButton = (ButtonRectangle) dialog.findViewById(R.id.cancel_button);
+        ButtonRectangle checkoutButton = (ButtonRectangle)
+                dialog.findViewById(R.id.checkoutcalidate_button);
+
+        cancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-
+                dialog.dismiss();
             }
         });
 
-        // Set cancel click listenner
-        dialog.setOnCancelButtonClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v)
-            {
 
-            }
-        });
+            checkoutButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if (edit.getText().toString() != null && !edit.getText().toString().equals(""))
+                        updtateBook(edit.getText().toString(), dialog);
+
+                }
+            });
+
+
 
         dialog.show();
     }
 
+    public void updtateBook(String name, final Dialog dialog)
+    {
+        updateService.updateBook(mBookUrl, name, new Callback<BaseResponse>()
+        {
+            @Override public void success(BaseResponse baseResponse, Response response)
+            {
+                Toast.makeText(getActivity(), "Checkout done ! :)", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                getFragmentManager().popBackStackImmediate();
+            }
+
+            @Override public void failure(RetrofitError error)
+            {
+                Toast.makeText(getActivity(), "Checkout error ! :(", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

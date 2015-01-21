@@ -55,7 +55,7 @@
             android:id="@+id/edit_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Publisher"
+            android:hint="Tags"
             app:baseColor="@color/md_grey_800"
             app:floatingLabel="highlight"
             app:primaryColor="@color/md_light_green_400"
