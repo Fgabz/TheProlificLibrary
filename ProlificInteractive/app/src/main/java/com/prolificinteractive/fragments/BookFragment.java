@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.prolificinteractive.R;
 import com.prolificinteractive.models.BookResponse;
 import com.prolificinteractive.services.IBookService;
@@ -17,6 +18,7 @@ import com.prolificinteractive.utils.Globals;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -26,8 +28,12 @@ import retrofit.client.Response;
 public class BookFragment extends Fragment
 {
     private static final String ARG_URL = "url";
+    private static final String ARG_AUTHOR = "author";
+
     private final IBookService bookService;
     private String mBookUrl;
+    private String mAuthor;
+
 
     @InjectView(R.id.view_titlebook) TextView mBookTitle;
     @InjectView(R.id.view_author) TextView mAuthorBook;
@@ -35,13 +41,14 @@ public class BookFragment extends Fragment
     @InjectView(R.id.lao_name) TextView mLaoName;
     @InjectView(R.id.publisher_name) TextView mPublisher;
     @InjectView(R.id.imageviewBook) ImageView mImageBook;
+    @InjectView(R.id.checkout_button) ButtonRectangle mCheckoutButton;
 
-    public static BookFragment newInstance(String url)
+    public static BookFragment newInstance(String url, String author)
     {
         BookFragment fragment = new BookFragment();
         Bundle args = new Bundle();
         args.putString(ARG_URL, url);
-
+        args.putString(ARG_AUTHOR, author);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +68,10 @@ public class BookFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null)
+        {
             mBookUrl = getArguments().getString(ARG_URL);
+            mAuthor = getArguments().getString(ARG_AUTHOR);
+        }
 
 
         bookService.getSpecificBook(mBookUrl, new Callback<BookResponse>()
@@ -89,12 +99,10 @@ public class BookFragment extends Fragment
         });
     }
 
-    private void setCircleColor()
+    private void setCircleColor(String author)
     {
         ColorGenerator generator = ColorGenerator.MATERIAL;
-        String author = mAuthorBook.getText().toString();
         int color = generator.getColor(author);
-
 
         TextDrawable drawable = TextDrawable.builder()
                 .buildRound(author.substring(0, 1).toString(), color);
@@ -102,13 +110,19 @@ public class BookFragment extends Fragment
 
     }
 
+
+    @OnClick(R.id.checkout_button)
+    public void checkoutAction(){
+        
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_book, container, false);
         ButterKnife.inject(this, view);
-        this.setCircleColor();
+
+        setCircleColor(mAuthor);
         return view;
     }
 

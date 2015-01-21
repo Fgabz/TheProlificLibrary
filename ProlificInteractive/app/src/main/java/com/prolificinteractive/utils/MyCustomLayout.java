@@ -2,6 +2,7 @@ package com.prolificinteractive.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 /**
@@ -9,6 +10,11 @@ import android.widget.RelativeLayout;
  */
 public class MyCustomLayout extends RelativeLayout
 {
+    private float yFraction = 0;
+    private float xFraction = 0;
+    private ViewTreeObserver.OnPreDrawListener preDrawListener = null;
+
+
     public MyCustomLayout(Context context)
     {
         super(context);
@@ -19,23 +25,69 @@ public class MyCustomLayout extends RelativeLayout
         super(context, attrs);
     }
 
-    public float getXFraction() {
-        return getX() / getWidth(); // TODO: guard divide-by-zero
+    public float getXFraction(float fraction)
+    {
+           return this.xFraction;
     }
 
-    public void setXFraction(float XFraction) {
-        // TODO: cache width
-        final int width = getWidth();
-        setY((width > 0) ? (XFraction * width) : -9999);
+    public void setXFraction(float fraction)
+    {
+        this.xFraction = fraction;
+
+        if (getWidth() == 0)
+        {
+            if (preDrawListener == null)
+            {
+                preDrawListener = new ViewTreeObserver.OnPreDrawListener()
+                {
+                    @Override
+                    public boolean onPreDraw()
+                    {
+                        getViewTreeObserver().removeOnPreDrawListener(preDrawListener);
+                        setXFraction(xFraction);
+                        return true;
+                    }
+                };
+                getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+            }
+            return;
+        }
+        float translationx = getWidth() * fraction;
+        setTranslationX(translationx);
     }
 
-    public float getYFraction() {
-        return getY() / getHeight(); // TODO: guard divide-by-zero
+
+    public void setYFraction(float fraction)
+    {
+
+        this.yFraction = fraction;
+
+        if (getHeight() == 0)
+        {
+            if (preDrawListener == null)
+            {
+                preDrawListener = new ViewTreeObserver.OnPreDrawListener()
+                {
+                    @Override
+                    public boolean onPreDraw()
+                    {
+                        getViewTreeObserver().removeOnPreDrawListener(preDrawListener);
+                        setYFraction(yFraction);
+                        return true;
+                    }
+                };
+                getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+            }
+            return;
+        }
+
+        float translationY = getHeight() * fraction;
+        setTranslationY(translationY);
     }
 
-    public void setYFraction(float YFraction) {
-        // TODO: cache width
-        final int height = getHeight();
-        setY((height > 0) ? (YFraction * height) : -9999);
+    public float getYFraction()
+    {
+        return this.yFraction;
+
     }
 }

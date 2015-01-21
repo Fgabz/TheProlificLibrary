@@ -84,7 +84,6 @@ public class LibraryFragment extends Fragment
     {
         getFragmentManager()
                 .beginTransaction()
-
                 .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up,
                         R.anim.slide_in_up, R.anim.slide_out_up)
                 .replace(R.id.container, AddBookFragment.newInstance())
@@ -232,8 +231,10 @@ public class LibraryFragment extends Fragment
         BookResponse book = (BookResponse) mListView.getItemAtPosition(position);
 
         getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, BookFragment.newInstance(book.getUrl().substring(1)))
+                .beginTransaction().setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left,
+                R.anim.slide_in_left, R.anim.slide_out_left)
+                .replace(R.id.container, BookFragment.newInstance(book.getUrl().substring(1),
+                        book.getAuthor()))
                 .addToBackStack(null)
                 .commit();
     }
