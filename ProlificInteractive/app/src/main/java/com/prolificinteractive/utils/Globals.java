@@ -8,7 +8,10 @@ import lombok.Setter;
  */
 public class Globals
 {
+
+    //Clas is used for all the global variables
     private static Globals instance;
+
 
     @Getter
     @Setter

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.widgets.Dialog;
 import com.prolificinteractive.R;
 import com.prolificinteractive.models.BookResponse;
 import com.prolificinteractive.services.IBookService;
@@ -86,8 +87,8 @@ public class BookFragment extends Fragment
                     mTagName.setText(bookResponse.getCategories().toString());
                 if (bookResponse.getLastCheckedOut() != null ||
                         bookResponse.getLastCheckedOutBy() != null)
-                mLaoName.setText(bookResponse.getLastCheckedOutBy() + " @ " +
-                        bookResponse.getLastCheckedOut());
+                    mLaoName.setText(bookResponse.getLastCheckedOutBy() + " @ " +
+                            bookResponse.getLastCheckedOut());
                 if (bookResponse.getPublisher() != null)
                     mPublisher.setText(bookResponse.getPublisher().toString());
             }
@@ -97,6 +98,8 @@ public class BookFragment extends Fragment
 
             }
         });
+
+
     }
 
     private void setCircleColor(String author)
@@ -112,9 +115,39 @@ public class BookFragment extends Fragment
 
 
     @OnClick(R.id.checkout_button)
-    public void checkoutAction(){
-        
+    public void checkoutAction()
+    {
+        Dialog dialog = new Dialog(getActivity(),
+                "Checkout Book", "Under which name you want to checkout ?");
+
+//        final EditText input = new EditText(getActivity());
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT);
+//        input.setLayoutParams(lp);
+//
+//        dialog.setContentView(input);
+
+        // Set accept click listenner
+        dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v)
+            {
+
+            }
+        });
+
+        // Set cancel click listenner
+        dialog.setOnCancelButtonClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v)
+            {
+
+            }
+        });
+
+        dialog.show();
     }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -123,6 +156,7 @@ public class BookFragment extends Fragment
         ButterKnife.inject(this, view);
 
         setCircleColor(mAuthor);
+
         return view;
     }
 
