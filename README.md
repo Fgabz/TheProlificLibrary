@@ -6,7 +6,6 @@ TheProlificLibrary
 
 * Watch the library 
 ![Alt text](/IMGREADME/home.PNG?raw=true "Home Library")
-
 * Add a book
 ![Alt text](/IMGREADME/addbook.PNG?raw=true "Add Book")
 * Watch a book's details 
