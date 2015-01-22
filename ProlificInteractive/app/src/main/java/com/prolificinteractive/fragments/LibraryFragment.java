@@ -85,6 +85,9 @@ public class LibraryFragment extends Fragment
                 .create(IDeleteLibraryService.class);
     }
 
+    /*
+    Setting the dimension of the circle
+     */
     private int dp2px(int dp)
     {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
