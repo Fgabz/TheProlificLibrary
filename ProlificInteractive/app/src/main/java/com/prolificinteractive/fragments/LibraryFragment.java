@@ -125,6 +125,7 @@ public class LibraryFragment extends Fragment
         showListContent();
     }
 
+    //Function for loading all the library in the ListView
     private void showListContent()
     {
         librarykService.getBooksLibrary(new Callback<List<BookResponse>>()
