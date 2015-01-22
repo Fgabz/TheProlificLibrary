@@ -24,7 +24,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/description"
         android:id="@+id/view_author"
-        android:layout_below="@+id/imageviewBook"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/view_titlebook"
         />
 
     <TextView

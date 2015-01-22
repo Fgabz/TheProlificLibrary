@@ -54,8 +54,10 @@ public class AddBookFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
     }
 
+    //Function for adding a book int the library
     @OnClick(R.id.submit_button)
     public void submit()
     {

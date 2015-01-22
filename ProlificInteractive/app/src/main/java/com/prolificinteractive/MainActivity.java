@@ -4,13 +4,26 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import com.gc.materialdesign.widgets.SnackBar;
 import com.prolificinteractive.fragments.LibraryFragment;
+import com.prolificinteractive.models.BaseResponse;
+import com.prolificinteractive.services.IDeleteLibraryService;
 import com.prolificinteractive.utils.Globals;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class MainActivity extends ActionBarActivity
 {
+
+    private IDeleteLibraryService mDeleteLibraryService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -20,6 +33,13 @@ public class MainActivity extends ActionBarActivity
 
         Globals g = Globals.getInstance();
         g.setUrl("http://prolific-interview.herokuapp.com/54bd7b72778b4a0008876e08");
+
+        mDeleteLibraryService = new RestAdapter.Builder()
+            .setEndpoint(g.getUrl())
+            .build()
+            .create(IDeleteLibraryService.class);
+
+
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, LibraryFragment.newInstance()).addToBackStack(null).commit();
@@ -43,8 +63,31 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        if (id == R.id.action_delete)
         {
+
+            SnackBar snackbar = new SnackBar(MainActivity.this,
+                    "Are you sure that you want to delete all your library ?",
+                    "YES", new View.OnClickListener() {
+                @Override public void onClick(View v)
+                {
+                    mDeleteLibraryService.deleteLibrary(new Callback<BaseResponse>() {
+                        @Override public void success(BaseResponse baseResponse, Response response)
+                        {
+                            Toast.makeText(MainActivity.this, "Library Deleted", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override public void failure(RetrofitError error)
+                        {
+                            Toast.makeText(MainActivity.this, " Error Library Deleted :(",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+            snackbar.show();
+
+
             return true;
         }
 

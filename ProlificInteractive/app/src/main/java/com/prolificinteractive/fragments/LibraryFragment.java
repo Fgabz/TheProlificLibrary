@@ -119,6 +119,12 @@ public class LibraryFragment extends Fragment
         mListView.setMenuCreator(creator);
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        showListContent();
+    }
+
     private void showListContent()
     {
         librarykService.getBooksLibrary(new Callback<List<BookResponse>>()

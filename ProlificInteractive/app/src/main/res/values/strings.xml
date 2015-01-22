@@ -3,9 +3,10 @@
 
     <string name="app_name">ProlificInteractive</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_delete">Delete all</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_book">Submit</string>
     <string name="description">None</string>
+    <string name="action_share">Share</string>
     <string name="checkout">Checkout</string>
 </resources>
