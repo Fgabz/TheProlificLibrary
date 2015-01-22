@@ -9,6 +9,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,11 +22,13 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.gc.materialdesign.views.ButtonFloat;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.prolificinteractive.R;
 import com.prolificinteractive.adapters.BookAdapter;
 import com.prolificinteractive.models.BaseResponse;
 import com.prolificinteractive.models.BookResponse;
 import com.prolificinteractive.services.IDeleteBookService;
+import com.prolificinteractive.services.IDeleteLibraryService;
 import com.prolificinteractive.services.ILibrarykService;
 import com.prolificinteractive.utils.Globals;
 
@@ -48,6 +53,8 @@ public class LibraryFragment extends Fragment
     private BookAdapter mAdapter;
     private final ILibrarykService librarykService;
     private final IDeleteBookService deleteBookService;
+    private final IDeleteLibraryService mDeleteLibraryService;
+
     private RecyclerView.LayoutManager mLayoutManager;
 
 
@@ -71,6 +78,11 @@ public class LibraryFragment extends Fragment
                 .setEndpoint(g.getUrl())
                 .build()
                 .create(IDeleteBookService.class);
+
+        mDeleteLibraryService = new RestAdapter.Builder()
+                .setEndpoint(g.getUrl())
+                .build()
+                .create(IDeleteLibraryService.class);
     }
 
     private int dp2px(int dp)
@@ -79,6 +91,9 @@ public class LibraryFragment extends Fragment
                 getResources().getDisplayMetrics());
     }
 
+    /*
+        Function for adding a book
+    */
     @OnClick(R.id.buttonFloat)
     public void addBook()
     {
@@ -91,6 +106,9 @@ public class LibraryFragment extends Fragment
                 .commit();
     }
 
+    /*
+        Function for creating the custom the submenu of the ListView
+    */
     private void createSwipeList()
     {
         SwipeMenuCreator creator = new SwipeMenuCreator()
@@ -125,7 +143,7 @@ public class LibraryFragment extends Fragment
         showListContent();
     }
 
-    //Function for loading all the library in the ListView
+    /*Function for loading all the library in the ListView*/
     private void showListContent()
     {
         librarykService.getBooksLibrary(new Callback<List<BookResponse>>()
@@ -146,10 +164,12 @@ public class LibraryFragment extends Fragment
 
         if (mSwipeRefreshLayout != null)
         {
-            new Handler().postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable()
+            {
 
                 @Override
-                public void run() {
+                public void run()
+                {
                     // stop progress animation
                     mSwipeRefreshLayout.animate().cancel();
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -161,7 +181,10 @@ public class LibraryFragment extends Fragment
     }
 
 
-    public void deleteMethod(int position, int index)
+    /*
+        Function for deleting a book
+    */
+    public void deleteBook(int position, int index)
     {
         if (index == 0)
         {
@@ -188,7 +211,7 @@ public class LibraryFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         mAdapter = new BookAdapter(getActivity());
         this.showListContent();
 
@@ -221,7 +244,7 @@ public class LibraryFragment extends Fragment
                 switch (index)
                 {
                     case 0:
-                        deleteMethod(position, index);
+                        deleteBook(position, index);
                 }
 
                 return false;
@@ -246,6 +269,62 @@ public class LibraryFragment extends Fragment
                 .commit();
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /*
+        Function for deleting the all library
+    */
+    public void deleteLibrary()
+    {
+        SnackBar snackbar = new SnackBar(getActivity(),
+                "Are you sure that you want to delete all your library ?",
+                "YES", new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                mDeleteLibraryService.deleteLibrary(new Callback<BaseResponse>()
+                {
+                    @Override public void success(BaseResponse baseResponse, Response response)
+                    {
+                        Toast.makeText(getActivity(), "Library Deleted", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override public void failure(RetrofitError error)
+                    {
+                        Toast.makeText(getActivity(), " Error Library Deleted :(",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        snackbar.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_delete)
+        {
+            deleteLibrary();
+
+            //Refreshing the listView
+            showListContent();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 
 }

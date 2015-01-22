@@ -8,6 +8,11 @@ import android.widget.RelativeLayout;
 /**
  * Created by Fanilo on 20/01/2015.
  */
+
+
+/*
+    CustomLayout for the slide animations
+*/
 public class MyCustomLayout extends RelativeLayout
 {
     private float yFraction = 0;

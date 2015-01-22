@@ -2,8 +2,12 @@ package com.prolificinteractive.fragments;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -74,10 +78,30 @@ public class BookFragment extends Fragment
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_fragment, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+        switch (item.getItemId())
+        {
+            case R.id.action_share:
+                shareBook();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         if (getArguments() != null)
         {
             mBookUrl = getArguments().getString(ARG_URL);
@@ -112,6 +136,25 @@ public class BookFragment extends Fragment
 
     }
 
+    /*
+    Function Sharing the current book to the other application
+*/
+    public void shareBook()
+    {
+        Intent intent = null;
+
+        intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intent.putExtra(Intent.EXTRA_TEXT, " I'm reading this current book \" " +
+                mBookTitle.getText().toString() + " \" of " + mAuthorBook.getText().toString());
+        Intent i = new Intent(Intent.createChooser(intent, "Share Book to..."));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        getActivity().startActivity(i);
+    }
+
     private void setCircleColor(String author)
     {
         ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -124,6 +167,9 @@ public class BookFragment extends Fragment
     }
 
 
+    /*
+    Function showing the dialog for the checkout of the book
+    */
     @OnClick(R.id.checkout_button)
     public void checkoutAction()
     {
@@ -150,22 +196,24 @@ public class BookFragment extends Fragment
         });
 
 
-            checkoutButton.setOnClickListener(new View.OnClickListener()
+        checkoutButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
-                @Override
-                public void onClick(View v)
-                {
-                    if (edit.getText().toString() != null && !edit.getText().toString().equals(""))
-                        updtateBook(edit.getText().toString(), dialog);
+                if (edit.getText().toString() != null && !edit.getText().toString().equals(""))
+                    updtateBook(edit.getText().toString(), dialog);
 
-                }
-            });
-
+            }
+        });
 
 
         dialog.show();
     }
 
+    /*
+        Function calling the service fot updating the book
+    */
     public void updtateBook(String name, final Dialog dialog)
     {
         updateService.updateBook(mBookUrl, name, new Callback<BaseResponse>()

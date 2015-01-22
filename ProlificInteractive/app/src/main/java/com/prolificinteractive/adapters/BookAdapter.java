@@ -26,12 +26,12 @@ public class BookAdapter extends ArrayAdapter<BookResponse>
     private final LayoutInflater mInflater;
 
 
-
-    public BookAdapter(final Context context){
+    public BookAdapter(final Context context)
+    {
 
         super(context, R.layout.book_adapter, new ArrayList<BookResponse>());
         this.mContext = context;
-        mInflater= LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(context);
 
 
     }
@@ -49,7 +49,8 @@ public class BookAdapter extends ArrayAdapter<BookResponse>
             ButterKnife.inject(mBookHoler, view);
             view.setTag(mBookHoler);
         }
-        else{
+        else
+        {
             view = convertView;
             mBookHoler = (BookHolder) view.getTag();
         }
@@ -60,24 +61,29 @@ public class BookAdapter extends ArrayAdapter<BookResponse>
         return view;
     }
 
-    private void setCircleColor(int position, BookHolder holder){
+    /*
+    Function for setting the color of the circle in the ListView
+    */
+    private void setCircleColor(int position, BookHolder holder)
+    {
         ColorGenerator generator = ColorGenerator.MATERIAL;
         String author = this.getItem(position).getAuthor().toString();
         int color = generator.getColor(author);
 
 
         TextDrawable drawable = TextDrawable.builder()
-                .buildRound(author.substring(0,1).toString(), color);
+                .buildRound(author.substring(0, 1).toString(), color);
         holder.getImageView().setImageDrawable(drawable);
 
     }
 
-    public void setViews(int position, BookHolder holder){
-            holder.getBookTitle().setText(this.getItem(position).getTitle());
-            holder.getAuthorName().setText(this.getItem(position).getAuthor());
+    public void setViews(int position, BookHolder holder)
+    {
+        holder.getBookTitle().setText(this.getItem(position).getTitle());
+        holder.getAuthorName().setText(this.getItem(position).getAuthor());
 
 
-            setCircleColor(position, holder);
+        setCircleColor(position, holder);
     }
 
 
