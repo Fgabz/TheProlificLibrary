@@ -5,6 +5,8 @@ TheProlificLibrary
 ###Mandatory Features :
 
 * Watch the library 
+![Alt text](/IMGREADME/home?raw=true "Home Library")
+
 * Add a book
 * Watch a book's details 
 * Share on
